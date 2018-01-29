@@ -1,0 +1,39 @@
+{
+  "resource": "/",
+  "path": "/",
+  "httpMethod": "GET",
+  "headers": null,
+  "queryStringParameters": {
+    "gameId": "6",
+    "type": "team"
+  },
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "path": "/",
+    "accountId": "329054710135",
+    "resourceId": "qazigdluyf",
+    "stage": "test-invoke-stage",
+    "requestId": "test-invoke-request",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "cognitoIdentityId": null,
+      "apiKey": "test-invoke-api-key",
+      "cognitoAuthenticationType": null,
+      "userArn": "arn:aws:iam::329054710135:user/yanai@tikalk.com",
+      "apiKeyId": "test-invoke-api-key-id",
+      "userAgent": "Apache-HttpClient/4.5.x (Java/1.8.0_144)",
+      "accountId": "329054710135",
+      "caller": "AIDAJCS5C5YY6GAM4RCFO",
+      "sourceIp": "test-invoke-source-ip",
+      "accessKey": "ASIAISQIHMBKU2WZDYZQ",
+      "cognitoAuthenticationProvider": null,
+      "user": "AIDAJCS5C5YY6GAM4RCFO"
+    },
+    "resourcePath": "/",
+    "httpMethod": "PUT",
+    "apiId": "s48uy8tvpi"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
