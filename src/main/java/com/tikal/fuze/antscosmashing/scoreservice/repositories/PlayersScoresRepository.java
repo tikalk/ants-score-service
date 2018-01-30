@@ -21,14 +21,17 @@ import static java.util.stream.Collectors.toList;
 
 public class PlayersScoresRepository {
     private static final Logger logger = LogManager.getLogger(PlayersScoresRepository.class);
+    private final String gameIdScoreIndexName;
 
     private ObjectMapper mapper = new ObjectMapper();
 
     private DynamoDB dynamoDb;
-    private String tableName = "playersScore";
+    private String tableName;
 
     public PlayersScoresRepository(){
-        this.dynamoDb=DbManager.getDB();
+        dynamoDb=DbManager.getInstance().getDynamoDb();
+        tableName =DbManager.getInstance().getPlayersScoreTableName();
+        gameIdScoreIndexName = DbManager.getInstance().getGameIdScoreIndexName();
     }
 
 
@@ -88,7 +91,7 @@ public class PlayersScoresRepository {
                         .withInt(":gameId", gameId))
                 .withScanIndexForward(false);
 
-        ItemCollection<QueryOutcome> items = getTable().getIndex("gameId-score-index").query(spec);
+        ItemCollection<QueryOutcome> items = getTable().getIndex(gameIdScoreIndexName).query(spec);
         Iterable<Item> iterable = () -> items.iterator();
         return StreamSupport.stream(iterable.spliterator(), false);
     }

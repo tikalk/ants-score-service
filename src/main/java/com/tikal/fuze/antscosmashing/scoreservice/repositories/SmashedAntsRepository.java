@@ -7,10 +7,11 @@ import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 public class SmashedAntsRepository {
 
     private DynamoDB dynamoDb;
-    private String tableName = "smashedAnts";
+    private String tableName;
 
     public SmashedAntsRepository(){
-        this.dynamoDb=DbManager.getDB();
+        dynamoDb=DbManager.getInstance().getDynamoDb();
+        tableName =DbManager.getInstance().getSmashedAntsTableName();
     }
 
     public boolean isExist(String antId){
