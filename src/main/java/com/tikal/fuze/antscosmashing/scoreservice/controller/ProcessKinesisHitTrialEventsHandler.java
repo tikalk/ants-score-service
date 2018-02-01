@@ -7,16 +7,23 @@ import com.tikal.fuze.antscosmashing.scoreservice.service.PlayerScoresService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
+import static com.tikal.fuze.antscosmashing.scoreservice.controller.StringUtils.trimDoubleQuotes;
+
 public class ProcessKinesisHitTrialEventsHandler implements RequestHandler<KinesisEvent, Void> {
     private static final Logger logger = LogManager.getLogger(ProcessKinesisHitTrialEventsHandler.class);
 
     private PlayerScoresService playerScoresService;
 
+    public ProcessKinesisHitTrialEventsHandler(){
+        if(playerScoresService ==null)
+            playerScoresService = new PlayerScoresService();
+    }
+
     @Override
     public Void handleRequest(KinesisEvent event, Context context) {
         try {
-            if(playerScoresService ==null)
-                playerScoresService = new PlayerScoresService();
 //            event.getRecords().stream().map(rec -> new String(rec.getKinesis().getData().array())).forEach(playerScoresService::savePlayerScore);
             event.getRecords().stream().forEach(this::handleKinesisEventRecord);
             return null;
@@ -29,11 +36,17 @@ public class ProcessKinesisHitTrialEventsHandler implements RequestHandler<Kines
     private void handleKinesisEventRecord(KinesisEvent.KinesisEventRecord kinesisEventRecord) {
         try{
             logger.debug("Processing event: {}",kinesisEventRecord.getKinesis());
-            playerScoresService.savePlayerScore(new String(kinesisEventRecord.getKinesis().getData().array()));
+            String kinesisData = new String(kinesisEventRecord.getKinesis().getData().array());
+            handleKinesisData(kinesisData);
         } catch (Exception e) {
             logger.error("Failed to process event",e);
             throw new RuntimeException(e);
         }
+    }
+
+    public void handleKinesisData(String kinesisData) throws IOException {
+        logger.debug("Got kinesis data {}",kinesisData);
+        playerScoresService.savePlayerScore(trimDoubleQuotes(kinesisData.replaceAll("\\\\", "")));
     }
 
 

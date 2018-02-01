@@ -24,7 +24,7 @@ public class PostHitTrialWebApiHandler implements RequestStreamHandler {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             JsonNode event = om.readTree(reader);
-            String inputBody = event.get("body").textValue().replaceAll("\\\\", "");
+            String inputBody = event.get("body").textValue();
             logger.debug("The input event contains body {}",inputBody);
             playerScoresService.savePlayerScore(inputBody);
 

@@ -3,6 +3,8 @@ package com.tikal.fuze.antscosmashing.scoreservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tikal.fuze.antscosmashing.scoreservice.controller.GetScoresWebApiHandler;
 import com.tikal.fuze.antscosmashing.scoreservice.controller.PostHitTrialWebApiHandler;
+import com.tikal.fuze.antscosmashing.scoreservice.controller.ProcessKinesisHitTrialEventsHandler;
+import com.tikal.fuze.antscosmashing.scoreservice.service.PlayerScoresService;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +20,8 @@ public class PlayersScoresTests {
 
     private ObjectMapper om = new ObjectMapper();
 
+//    private PlayerScoresService playerScoresService = new PlayerScoresService();
+
 
     @Test
     @Ignore
@@ -25,6 +29,13 @@ public class PlayersScoresTests {
         String data = getStringFromInputFile("post-score.json");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data.getBytes());
         new PostHitTrialWebApiHandler().handleRequest(inputStream,new ByteArrayOutputStream(),null);
+    }
+
+    @Test
+    @Ignore
+    public void testPlayerScoreServicePostToKinesis() throws IOException {
+        String kinesisData = "\"{\\\"type\\\": \\\"hit\\\",\\\"antId\\\": \\\"11122\\\",\\\"playerId\\\": 9,\\\"gameId\\\":5,\\\"userId\\\":55,\\\"teamId\\\":7}\"";
+        new ProcessKinesisHitTrialEventsHandler().handleKinesisData(kinesisData);
     }
 
     @Test
@@ -41,11 +52,14 @@ public class PlayersScoresTests {
 
 
 
+
+
     private String getStringFromInputFile(String fileName) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(fileName).getFile());
         return FileUtils.readFileToString(file, Charset.defaultCharset());
     }
+
 
 
 }
