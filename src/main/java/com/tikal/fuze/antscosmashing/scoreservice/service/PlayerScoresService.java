@@ -66,10 +66,10 @@ public class PlayerScoresService {
 
     private void setEnvVariables() {
         logger.debug("Hit SCORE IS:{}",getenv("HIT"));
-//        hitScore = Integer.valueOf(getenv("HIT"));
-//        firstHitScore = Integer.valueOf(getenv("FIRST_HIT"));
-//        selfHitScore =  Integer.valueOf(getenv("SELF_HIT"));
-//        firstSelfHitScore = Integer.valueOf(getenv("FIRST_SELF_HIT"));
+        hitScore = Integer.valueOf(getenv("HIT"));
+        firstHitScore = Integer.valueOf(getenv("FIRST_HIT"));
+        selfHitScore =  Integer.valueOf(getenv("SELF_HIT"));
+        firstSelfHitScore = Integer.valueOf(getenv("FIRST_SELF_HIT"));
     }
 
     private void handleMiss(int playerId, String antId) {
