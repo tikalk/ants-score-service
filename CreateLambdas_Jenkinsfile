@@ -31,6 +31,7 @@ node {
                 --memory-size 512 \
                 --timeout 15 \
                 --environment Variables=\"{HIT=1,FIRST_HIT=3,SELF_HIT=-1,FIRST_SELF_HIT=-3}\""
+            sh "sleep 5000"
             sh "aws lambda create-event-source-mapping \
                 --function-name Ants-Smashing-ProcessKinesisHitTrialEvents \
                 --event-source  arn:aws:kinesis:us-west-2:329054710135:stream/Ants-Smashing-HitTrials \
