@@ -12,7 +12,7 @@ node {
 
         }
       	stage ('Deploy') {
-      	    sh "aws lambda update-function-code --function-name Ants-Smashing-GetPlayersScores --zip-file fileb:/$zipFile"
+      	    sh "aws lambda update-function-code --function-name Ants-Smashing-GetPlayersScores --zip-file fileb://$zipFile"
       	}
     } catch (err) {
         currentBuild.result = 'FAILED'
