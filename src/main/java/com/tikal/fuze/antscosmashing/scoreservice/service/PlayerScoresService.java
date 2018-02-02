@@ -69,7 +69,7 @@ public class PlayerScoresService {
         firstHitScore = Integer.valueOf(getenv("FIRST_HIT"));
         selfHitScore =  Integer.valueOf(getenv("SELF_HIT"));
         firstSelfHitScore = Integer.valueOf(getenv("FIRST_SELF_HIT"));
-        logger.debug("hitScore:{}, firstHitScore:{}, selfHitScore:{}, firstSelfHitScore:{}");
+        logger.debug("hitScore:{}, firstHitScore:{}, selfHitScore:{}, firstSelfHitScore:{}",hitScore,firstHitScore,selfHitScore,selfHitScore);
     }
 
     private void handleMiss(int playerId, String antId) {
