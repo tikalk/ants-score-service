@@ -1,3 +1,4 @@
+rootProject.name = 'ants-score-service'
 if (!JavaVersion.current().java8Compatible) {
   throw new IllegalStateException('''A Haiku:
                                     |  This needs Java 8,
