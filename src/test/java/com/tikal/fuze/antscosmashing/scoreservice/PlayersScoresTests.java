@@ -14,17 +14,17 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.charset.Charset;
 
+@Ignore
 public class PlayersScoresTests {
     private static final Logger logger = LogManager.getLogger(PlayersScoresTests.class);
 
 
     private ObjectMapper om = new ObjectMapper();
 
-//    private PlayerScoresService playerScoresService = new PlayerScoresService();
+    private PlayerScoresService playerScoresService = new PlayerScoresService();
 
 
     @Test
-    @Ignore
     public void testPostHitTrialWebApi() throws IOException {
         String data = getStringFromInputFile("post-score.json");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data.getBytes());
@@ -32,7 +32,6 @@ public class PlayersScoresTests {
     }
 
     @Test
-    @Ignore
     public void testPlayerScoreServicePostToKinesis() throws IOException {
         String kinesisData = "\"{\\\"type\\\": \\\"hit\\\",\\\"antId\\\": \\\"11122\\\",\\\"playerId\\\": 9,\\\"gameId\\\":5,\\\"userId\\\":55,\\\"teamId\\\":7}\"";
         new ProcessKinesisHitTrialEventsHandler().handleKinesisData(kinesisData);
@@ -46,6 +45,12 @@ public class PlayersScoresTests {
         OutputStream os = new  ByteArrayOutputStream();
         new GetScoresWebApiHandler().handleRequest(inputStream,os,null);
         logger.debug(os.toString());
+    }
+
+    @Test
+    public void testHandleStr() throws IOException {
+        String str="{\"playerId\": 40,\"type\": \"miss\",\"gameId\": 36,\"userId\": 5,\"teamId\": 39}";
+        playerScoresService.savePlayerScore(str);
     }
 
 

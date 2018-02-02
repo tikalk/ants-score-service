@@ -29,7 +29,7 @@ public class ProcessKinesisHitTrialEventsHandler implements RequestHandler<Kines
             return null;
         } catch (Exception e) {
             logger.error("Failed to process event",e);
-            throw new RuntimeException(e);
+            return null;
         }
     }
 
