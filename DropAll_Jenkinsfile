@@ -4,9 +4,6 @@ node {
     def workspace = pwd()
     try {
         stage ('Drop All') {
-            sh "aws logs delete-log-group --log-group-name /aws/lambda/Ants-Smashing-GetPlayersScores"
-            sh "aws logs delete-log-group --log-group-name /aws/lambda/Ants-Smashing-PostHitTrial"
-            sh "aws logs delete-log-group --log-group-name /aws/lambda/Ants-Smashing-ProcessKinesisHitTrialEvents"
             sh "aws dynamodb delete-table --table-name Ants-Smashing-PlayersScore"
             sh "aws dynamodb delete-table --table-name Ants-Smashing-smashedAnts"
             sh "aws kinesis delete-stream --stream-name Ants-Smashing-HitTrials"
