@@ -44,8 +44,7 @@ node {
                 --role arn:aws:iam::329054710135:role/lambda-kinesis-ants  \
                 --runtime java8 \
                 --memory-size 512 \
-                --timeout 15 \
-                --environment Variables=\"{HIT=1,FIRST_HIT=3,SELF_HIT=-1,FIRST_SELF_HIT=-3}\""
+                --timeout 15\""
 
 
       	}

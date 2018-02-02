@@ -50,14 +50,16 @@ public class PlayerScoresService {
             JsonNode hitTrial = mapper.readTree(hitTrialStr);
 
             String type = hitTrial.get("type").textValue();
-            String antId = hitTrial.get("antId").textValue();
+            String antId=null;
+            if (!type.equals("miss"))
+                antId = hitTrial.get("antId").textValue();
             int playerId = hitTrial.get("playerId").intValue();
             int gameId = hitTrial.get("gameId").intValue();
             int userId = hitTrial.get("userId").intValue();
             int teamId = hitTrial.get("teamId").intValue();
 
             if (type.equals("miss"))
-                handleMiss(playerId, antId);
+                handleMiss(hitTrialStr);
             else if (type.equals("hit"))
                 handleHitOrFirstHit(playerId, gameId, userId, teamId,antId, false);
             if (type.equals("selfHit"))
@@ -65,6 +67,12 @@ public class PlayerScoresService {
     }
 
     private void setEnvVariables() {
+        if(getenv("HIT")==null){
+            logger.warn("HIT score is missing. we assume a testing mode so we fallback to default");
+            logger.debug("hitScore:{}, firstHitScore:{}, selfHitScore:{}, firstSelfHitScore:{}",hitScore,firstHitScore,selfHitScore,selfHitScore);
+            return;
+        }
+
         hitScore = Integer.valueOf(getenv("HIT"));
         firstHitScore = Integer.valueOf(getenv("FIRST_HIT"));
         selfHitScore =  Integer.valueOf(getenv("SELF_HIT"));
@@ -72,7 +80,8 @@ public class PlayerScoresService {
         logger.debug("hitScore:{}, firstHitScore:{}, selfHitScore:{}, firstSelfHitScore:{}",hitScore,firstHitScore,selfHitScore,selfHitScore);
     }
 
-    private void handleMiss(int playerId, String antId) {
+    private void handleMiss(String hitTrialStr) {
+        logger.debug("Ignoring the miss HitTrial:",hitTrialStr);
     }
 
     private void handleHitOrFirstHit(int playerId , int gameId, int userId, int teamId, String antId, boolean self) {

@@ -14,6 +14,8 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.charset.Charset;
 
+import static java.lang.System.getenv;
+
 @Ignore
 public class PlayersScoresTests {
     private static final Logger logger = LogManager.getLogger(PlayersScoresTests.class);
@@ -22,6 +24,7 @@ public class PlayersScoresTests {
     private ObjectMapper om = new ObjectMapper();
 
     private PlayerScoresService playerScoresService = new PlayerScoresService();
+
 
 
     @Test
