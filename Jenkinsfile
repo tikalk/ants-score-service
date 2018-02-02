@@ -9,10 +9,11 @@ node {
         }
         stage ('Build') {
         	sh './gradlew clean build'
-
         }
       	stage ('Deploy') {
       	    sh "aws lambda update-function-code --function-name Ants-Smashing-GetPlayersScores --zip-file fileb://$zipFile"
+      	    sh "aws lambda update-function-code --function-name Ants-Smashing-PostHitTrial --zip-file fileb://$zipFile"
+      	    sh "aws lambda update-function-code --function-name Ants-Smashing-ProcessKinesisHitTrialEvents --zip-file fileb://$zipFile"
       	}
     } catch (err) {
         currentBuild.result = 'FAILED'
