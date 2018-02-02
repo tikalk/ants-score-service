@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.List;
 
+import static java.lang.System.getenv;
+
 public class PlayerScoresService {
     private static final Logger logger = LogManager.getLogger(PlayerScoresService.class);
 
@@ -20,11 +22,11 @@ public class PlayerScoresService {
     private PlayersScoresRepository playersScoresRepository;
     private SmashedAntsRepository smashedAntsRepository;
 
+    private int hitScore=2;
+    private int firstHitScore=4;
+    private int selfHitScore=-2;
+    private int firstSelfHitScore=-4;
 
-    private int smashScore = 3;
-    private int selfSmashScore = -3;
-    private int hitScore = 1;
-    private int selfHitScore = -1;
 
 
     public PlayerScoresService() {
@@ -44,6 +46,7 @@ public class PlayerScoresService {
 
     public void savePlayerScore(String hitTrialStr) throws IOException {
             logger.debug("Handling hitTrialStr: {}",hitTrialStr);
+            setEnvVariables();
             JsonNode hitTrial = mapper.readTree(hitTrialStr);
 
             String type = hitTrial.get("type").textValue();
@@ -56,21 +59,29 @@ public class PlayerScoresService {
             if (type.equals("miss"))
                 handleMiss(playerId, antId);
             else if (type.equals("hit"))
-                handleHitOrSmash(playerId, gameId, userId, teamId,antId, false);
+                handleHitOrFirstHit(playerId, gameId, userId, teamId,antId, false);
             if (type.equals("selfHit"))
-                handleHitOrSmash(playerId, gameId, userId, teamId,antId, true);
+                handleHitOrFirstHit(playerId, gameId, userId, teamId,antId, true);
+    }
+
+    private void setEnvVariables() {
+        logger.debug("Hit SCORE IS:{}",getenv("HIT"));
+//        hitScore = Integer.valueOf(getenv("HIT"));
+//        firstHitScore = Integer.valueOf(getenv("FIRST_HIT"));
+//        selfHitScore =  Integer.valueOf(getenv("SELF_HIT"));
+//        firstSelfHitScore = Integer.valueOf(getenv("FIRST_SELF_HIT"));
     }
 
     private void handleMiss(int playerId, String antId) {
     }
 
-    private void handleHitOrSmash(int playerId ,int gameId,int userId,int teamId,String antId, boolean self) {
+    private void handleHitOrFirstHit(int playerId , int gameId, int userId, int teamId, String antId, boolean self) {
         int playerScore;
         int score;
         if (isSmashedNow(antId)) {
             smashedAntsRepository.put(antId, playerId);
-            score = (self) ? selfSmashScore : smashScore;
-            logger.debug("smash event:{}" , playerId);
+            score = (self) ? firstSelfHitScore : firstHitScore;
+            logger.debug("firstHit event:{}" , playerId);
         } else {
             score = (self) ? selfHitScore : hitScore;
             logger.debug("hit event:{}" , playerId);
