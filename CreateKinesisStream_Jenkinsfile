@@ -1,0 +1,14 @@
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), disableConcurrentBuilds()])
+
+node {
+    def workspace = pwd()
+    try {
+        stage ('Create Kinesis Stream') {
+      	    sh "aws kinesis create-stream --stream-name Ants-Smashing-HitTrials --shard-count 1"
+      	}
+    } catch (err) {
+        currentBuild.result = 'FAILED'
+        throw err
+    }
+
+}
