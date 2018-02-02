@@ -24,7 +24,7 @@ node {
 
             sh "aws lambda create-function \
                 --function-name  Ants-Smashing-ProcessKinesisHitTrialEvents \
-                --handler com.tikal.fuze.antscosmashing.scoreservice.controller.PostHitTrialWebApiHandler::handleRequest \
+                --handler com.tikal.fuze.antscosmashing.scoreservice.controller.ProcessKinesisHitTrialEventsHandler::handleRequest \
                 --zip-file fileb://$zipFile \
                 --role arn:aws:iam::329054710135:role/lambda-kinesis-ants  \
                 --runtime java8 \
@@ -39,7 +39,7 @@ node {
 
             sh "aws lambda create-function \
                 --function-name  Ants-Smashing-GetPlayersScores \
-                --handler com.tikal.fuze.antscosmashing.scoreservice.controller.PostHitTrialWebApiHandler::handleRequest \
+                --handler com.tikal.fuze.antscosmashing.scoreservice.controller.GetScoresWebApiHandler::handleRequest \
                 --zip-file fileb://$zipFile \
                 --role arn:aws:iam::329054710135:role/lambda-kinesis-ants  \
                 --runtime java8 \
