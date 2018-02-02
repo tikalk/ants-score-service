@@ -20,6 +20,34 @@ node {
                 --memory-size 512 \
                 --timeout 15 \
                 --environment Variables=\"{HIT=1,FIRST_HIT=3,SELF_HIT=-1,FIRST_SELF_HIT=-3}\""
+
+
+            sh "aws lambda create-function \
+                --function-name  Ants-Smashing-ProcessKinesisHitTrialEvents \
+                --handler com.tikal.fuze.antscosmashing.scoreservice.controller.PostHitTrialWebApiHandler::handleRequest \
+                --zip-file fileb://$zipFile \
+                --role arn:aws:iam::329054710135:role/lambda-kinesis-ants  \
+                --runtime java8 \
+                --memory-size 512 \
+                --timeout 15 \
+                --environment Variables=\"{HIT=1,FIRST_HIT=3,SELF_HIT=-1,FIRST_SELF_HIT=-3}\""
+            sh "aws lambda create-event-source-mapping \
+                --function-name Ants-Smashing-ProcessKinesisHitTrialEvents \
+                --event-source  arn:aws:kinesis:us-west-2:329054710135:stream/Ants-Smashing-HitTrials \
+                --starting-position LATEST"
+
+
+            sh "aws lambda create-function \
+                --function-name  Ants-Smashing-GetPlayersScores \
+                --handler com.tikal.fuze.antscosmashing.scoreservice.controller.PostHitTrialWebApiHandler::handleRequest \
+                --zip-file fileb://$zipFile \
+                --role arn:aws:iam::329054710135:role/lambda-kinesis-ants  \
+                --runtime java8 \
+                --memory-size 512 \
+                --timeout 15 \
+                --environment Variables=\"{HIT=1,FIRST_HIT=3,SELF_HIT=-1,FIRST_SELF_HIT=-3}\""
+
+
       	}
     } catch (err) {
         currentBuild.result = 'FAILED'
