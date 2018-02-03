@@ -37,13 +37,12 @@ public class PlayersScoresRepository {
 
     public Integer getAfterCheckingGameAndTeamIds(int playerId, int teamId, int gameId, int userId){
         Item playerScoreItem = getTable().getItem("playerId", playerId);
+        if(playerScoreItem==null)
+            return null;
         if(playerScoreItem.getInt("teamId") != teamId || playerScoreItem.getInt("gameId")!=gameId || playerScoreItem.getInt("userId")!=userId){
             logger.warn("We got wrong input, as playerId had different teamId or gameId than before. We will override previous data and treat the previous score as 0, as we assume its a new player. Previous Item is {}, while current input is playerId {}, teamId {}, gameId {}. userId {}",playerScoreItem,playerId,teamId,gameId,userId);
             return 0;
         }
-
-        if(playerScoreItem==null)
-            return null;
         return playerScoreItem.getInt("score");
     }
 
