@@ -100,7 +100,7 @@ public class PlayerScoresService {
     }
 
     private int increasePlayerScore(Integer playerId,int gameId,int userId,int teamId, int score) {
-        Integer previousScore = playersScoresRepository.get(playerId);
+        Integer previousScore = playersScoresRepository.getAfterCheckingGameAndTeamIds(playerId,teamId,gameId,userId);
 //        Integer previousScore=null;
         if (previousScore == null)
             previousScore = 0;
