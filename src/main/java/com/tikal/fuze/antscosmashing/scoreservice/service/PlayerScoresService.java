@@ -22,12 +22,17 @@ public class PlayerScoresService {
     private PlayersScoresRepository playersScoresRepository;
     private SmashedAntsRepository smashedAntsRepository;
 
-    private int hitScore=2;
-    private int firstHitScore=4;
-    private int selfHitScore=-2;
-    private int firstSelfHitScore=-4;
+    private int hitScore;
+    private int firstHitScore;
+    private int selfHitScore;
+    private int firstSelfHitScore;
 
-
+    public PlayerScoresService(int hitScore, int firstHitScore, int selfHitScore, int firstSelfHitScore) {
+        this.hitScore = hitScore;
+        this.firstHitScore = firstHitScore;
+        this.selfHitScore = selfHitScore;
+        this.firstSelfHitScore = firstSelfHitScore;
+    }
 
     public PlayerScoresService() {
         playersScoresRepository = new PlayersScoresRepository();
