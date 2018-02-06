@@ -16,6 +16,11 @@ public class PostHitTrialWebApiHandler implements RequestStreamHandler {
     private ObjectMapper om = new ObjectMapper();
     private PlayerScoresService playerScoresService;
 
+    public PostHitTrialWebApiHandler(){
+        if(playerScoresService ==null)
+            playerScoresService = new PlayerScoresService();
+    }
+
     public PostHitTrialWebApiHandler(PlayerScoresService playerScoresService) {
         this.playerScoresService=playerScoresService;
     }
@@ -23,8 +28,6 @@ public class PostHitTrialWebApiHandler implements RequestStreamHandler {
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)  {
         try{
-            if(playerScoresService ==null)
-                playerScoresService = new PlayerScoresService();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             JsonNode event = om.readTree(reader);

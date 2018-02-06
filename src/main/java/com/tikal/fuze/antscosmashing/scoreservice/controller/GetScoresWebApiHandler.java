@@ -17,11 +17,14 @@ public class GetScoresWebApiHandler implements RequestStreamHandler {
     private ObjectMapper om = new ObjectMapper();
     private PlayerScoresService playerScoresService;
 
+    public GetScoresWebApiHandler() {
+        if (playerScoresService == null)
+            playerScoresService = new PlayerScoresService();
+    }
+
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)  {
         try {
-            if (playerScoresService == null)
-                playerScoresService = new PlayerScoresService();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             JsonNode event = om.readTree(reader);
