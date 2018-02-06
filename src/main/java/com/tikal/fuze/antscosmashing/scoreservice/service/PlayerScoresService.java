@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tikal.fuze.antscosmashing.scoreservice.repositories.PlayersScoresRepository;
 import com.tikal.fuze.antscosmashing.scoreservice.repositories.SmashedAntsRepository;
+import com.tikal.fuze.antscosmashing.scoreservice.repositories.TeamsScoresRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +21,7 @@ public class PlayerScoresService {
 
 
     private PlayersScoresRepository playersScoresRepository;
+    private TeamsScoresRepository teamsScoresRepository;
     private SmashedAntsRepository smashedAntsRepository;
 
     private int hitScore;
@@ -37,6 +39,7 @@ public class PlayerScoresService {
 
     public PlayerScoresService() {
         playersScoresRepository = new PlayersScoresRepository();
+        teamsScoresRepository = new TeamsScoresRepository();
         smashedAntsRepository = new SmashedAntsRepository();
     }
 
@@ -46,30 +49,30 @@ public class PlayerScoresService {
     }
 
     public String getTeamsScores(String gameId) throws JsonProcessingException {
-        List<String> teamsScores = playersScoresRepository.getTeamsScoresByGameId(Integer.valueOf(gameId));
+        List<String> teamsScores = teamsScoresRepository.getTeamsScoresByGameId(Integer.valueOf(gameId));
         return teamsScores.toString();
     }
 
     public void savePlayerScore(String hitTrialStr) throws IOException {
-            logger.debug("Handling hitTrialStr: {}",hitTrialStr);
-            setEnvVariables();
-            JsonNode hitTrial = mapper.readTree(hitTrialStr);
+        logger.debug("Handling hitTrialStr: {}", hitTrialStr);
+        setEnvVariables();
+        JsonNode hitTrial = mapper.readTree(hitTrialStr);
 
-            String type = hitTrial.get("type").textValue();
-            String antId=null;
-            if (!type.equals("miss"))
-                antId = hitTrial.get("antId").textValue();
-            int playerId = hitTrial.get("playerId").intValue();
-            int gameId = hitTrial.get("gameId").intValue();
-            int userId = hitTrial.get("userId").intValue();
-            int teamId = hitTrial.get("teamId").intValue();
+        String type = hitTrial.get("type").textValue();
+        String antId = null;
+        if (!type.equals("miss"))
+            antId = hitTrial.get("antId").textValue();
+        int playerId = hitTrial.get("playerId").intValue();
+        int teamId = hitTrial.get("teamId").intValue();
+        int gameId = hitTrial.get("gameId").intValue();
 
-            if (type.equals("miss"))
-                handleMiss(hitTrialStr);
-            else if (type.equals("hit"))
-                handleHitOrFirstHit(playerId,antId,gameId,userId,teamId, false);
-            if (type.equals("selfHit"))
-                handleHitOrFirstHit(playerId, antId, gameId,userId,teamId,true);
+
+        if (type.equals("miss"))
+            handleMiss(hitTrialStr);
+        else if (type.equals("hit"))
+            handleHitOrFirstHit(playerId, antId, gameId, teamId, false);
+        if (type.equals("selfHit"))
+            handleHitOrFirstHit(playerId, antId, gameId, teamId, true);
     }
 
     private void setEnvVariables() {
@@ -90,8 +93,7 @@ public class PlayerScoresService {
         logger.debug("Ignoring the miss HitTrial:",hitTrialStr);
     }
 
-    private void handleHitOrFirstHit(int playerId , String antId, int gameId,int userId,int teamId,boolean self) {
-        int playerScore;
+    private void handleHitOrFirstHit(int playerId , String antId, int gameId,int teamId,boolean self) {
         int score;
         if (isSmashedNow(antId)) {
             smashedAntsRepository.put(antId, playerId);
@@ -101,8 +103,9 @@ public class PlayerScoresService {
             score = (self) ? selfHitScore : hitScore;
             logger.debug("hit event:{}" , playerId);
         }
-        playersScoresRepository.put(playerId ,gameId,userId,teamId,score);
-        logger.debug("Updated player id {} to a new score " , playerId);
+        playersScoresRepository.put(playerId ,gameId,score);
+        teamsScoresRepository.put(teamId ,gameId,score);
+        logger.debug("Updated team id {} to a new score " , teamId);
     }
 
 

@@ -5,6 +5,7 @@ node {
     try {
         stage ('Drop All') {
             sh "aws dynamodb delete-table --table-name Ants-Smashing-PlayersScore"
+            sh "aws dynamodb delete-table --table-name Ants-Smashing-TeamsScore"
             sh "aws dynamodb delete-table --table-name Ants-Smashing-smashedAnts"
             sh "aws kinesis delete-stream --stream-name Ants-Smashing-HitTrials"
             sh "aws lambda delete-function --function-name Ants-Smashing-GetPlayersScores"

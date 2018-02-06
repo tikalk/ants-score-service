@@ -19,6 +19,7 @@ public class DbManager {
     private  String playersScoreTableName;
     private  String gameIdScoreIndexName;
     private String db_region;
+    private String teamsScoreTableName;
 
 
     private DbManager() {
@@ -57,6 +58,7 @@ public class DbManager {
             prop.load(inputStream);
             smashedAntsTableName = prop.getProperty("smashedAnts_tableName");
             playersScoreTableName = prop.getProperty("playersScore_tableName");
+            teamsScoreTableName = prop.getProperty("teamsScore_tableName");
             gameIdScoreIndexName = prop.getProperty("gameIdScoreIndexName");
             db_region = prop.getProperty("db_region");
         } catch (IOException e) {
@@ -69,5 +71,9 @@ public class DbManager {
         AmazonDynamoDBClient client = new AmazonDynamoDBClient();
         client.setRegion(Region.getRegion(Regions.fromName(db_region)));
         dynamoDb = new DynamoDB(client);
+    }
+
+    public String getTeamsScoreTableName() {
+        return teamsScoreTableName;
     }
 }
