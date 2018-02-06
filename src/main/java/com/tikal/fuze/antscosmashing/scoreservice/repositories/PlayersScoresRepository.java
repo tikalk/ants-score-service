@@ -1,9 +1,14 @@
 package com.tikal.fuze.antscosmashing.scoreservice.repositories;
 
 import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
+
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
+import com.amazonaws.services.dynamodbv2.xspec.IfNotExistsFunction;
+import com.amazonaws.services.dynamodbv2.xspec.N;
+import com.amazonaws.services.dynamodbv2.xspec.UpdateItemExpressionSpec;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
@@ -35,30 +41,29 @@ public class PlayersScoresRepository {
     }
 
 
-    public Integer getAfterCheckingGameAndTeamIds(int playerId, int teamId, int gameId, int userId){
-        Item playerScoreItem = getTable().getItem("playerId", playerId);
-        if(playerScoreItem==null)
-            return null;
-        if(playerScoreItem.getInt("teamId") != teamId || playerScoreItem.getInt("gameId")!=gameId || playerScoreItem.getInt("userId")!=userId){
-            logger.warn("We got wrong input, as playerId had different teamId or gameId than before. We will override previous data and treat the previous score as 0, as we assume its a new player. Previous Item is {}, while current input is playerId {}, teamId {}, gameId {}. userId {}",playerScoreItem,playerId,teamId,gameId,userId);
-            return 0;
-        }
-        return playerScoreItem.getInt("score");
-    }
-
     private Table getTable() {
         return dynamoDb.getTable(tableName);
     }
 
 
-    public void put(int playerId, int gameId,int userId,int teamId,int score){
-        getTable()
-                .putItem(new PutItemSpec().withItem(new Item()
-                        .withInt("playerId", playerId)
-                        .withInt("gameId", gameId)
-                        .withInt("userId", userId)
-                        .withInt("teamId", teamId)
-                        .withInt("score", score)));
+    public void put(int playerId, int score){
+        //put a new record with score 0 in case it doesn't exist
+        getTable().updateItem(new UpdateItemSpec()
+                .withPrimaryKey("playerId",playerId)
+                .withExpressionSpec(
+                        new ExpressionSpecBuilder()
+                        .addUpdate(N("score").set(if_not_exists("score", 0))).buildForUpdate())
+        );
+
+        //Add the new score
+        getTable().updateItem(new UpdateItemSpec()
+                .withPrimaryKey("playerId",playerId)
+                .withExpressionSpec(
+                        new ExpressionSpecBuilder()
+                                .addUpdate(N("score").set(N("score").plus(score))).buildForUpdate())
+        );
+
+
     }
 
 

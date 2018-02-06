@@ -52,7 +52,7 @@ public class PlayersScoresTests {
 
     @Test
     public void testHandleStr() throws IOException {
-        String str="{\"playerId\": 40,\"type\": \"miss\",\"gameId\": 36,\"userId\": 5,\"teamId\": 39}";
+        String str="{\"type\": \"hit\",\"antId\": \"11122\",\"playerId\": 114,\"gameId\":6,\"userId\":5,\"teamId\":7}";
         playerScoresService.savePlayerScore(str);
     }
 

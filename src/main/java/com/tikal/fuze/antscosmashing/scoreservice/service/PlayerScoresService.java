@@ -28,6 +28,7 @@ public class PlayerScoresService {
     private int firstSelfHitScore;
 
     public PlayerScoresService(int hitScore, int firstHitScore, int selfHitScore, int firstSelfHitScore) {
+        this();
         this.hitScore = hitScore;
         this.firstHitScore = firstHitScore;
         this.selfHitScore = selfHitScore;
@@ -59,16 +60,13 @@ public class PlayerScoresService {
             if (!type.equals("miss"))
                 antId = hitTrial.get("antId").textValue();
             int playerId = hitTrial.get("playerId").intValue();
-            int gameId = hitTrial.get("gameId").intValue();
-            int userId = hitTrial.get("userId").intValue();
-            int teamId = hitTrial.get("teamId").intValue();
 
             if (type.equals("miss"))
                 handleMiss(hitTrialStr);
             else if (type.equals("hit"))
-                handleHitOrFirstHit(playerId, gameId, userId, teamId,antId, false);
+                handleHitOrFirstHit(playerId,antId, false);
             if (type.equals("selfHit"))
-                handleHitOrFirstHit(playerId, gameId, userId, teamId,antId, true);
+                handleHitOrFirstHit(playerId, antId, true);
     }
 
     private void setEnvVariables() {
@@ -89,8 +87,7 @@ public class PlayerScoresService {
         logger.debug("Ignoring the miss HitTrial:",hitTrialStr);
     }
 
-    private void handleHitOrFirstHit(int playerId , int gameId, int userId, int teamId, String antId, boolean self) {
-        int playerScore;
+    private void handleHitOrFirstHit(int playerId , String antId, boolean self) {
         int score;
         if (isSmashedNow(antId)) {
             smashedAntsRepository.put(antId, playerId);
@@ -100,18 +97,11 @@ public class PlayerScoresService {
             score = (self) ? selfHitScore : hitScore;
             logger.debug("hit event:{}" , playerId);
         }
-        playerScore = increasePlayerScore(playerId, gameId, userId, teamId, score);
-        logger.debug("Updated player id {} to a new score {}" , playerId, playerScore);
+        playersScoresRepository.put(playerId, score);
+        logger.debug("Updated player id {} to a new score " , playerId);
     }
 
-    private int increasePlayerScore(Integer playerId,int gameId,int userId,int teamId, int score) {
-        Integer previousScore = playersScoresRepository.getAfterCheckingGameAndTeamIds(playerId,teamId,gameId,userId);
-//        Integer previousScore=null;
-        if (previousScore == null)
-            previousScore = 0;
-        playersScoresRepository.put(playerId, gameId, userId, teamId,previousScore + score);
-        return previousScore + score;
-    }
+
 
     private boolean isSmashedNow(String antId) {
         return !(smashedAntsRepository.isExist(antId));
