@@ -16,6 +16,10 @@ public class PostHitTrialWebApiHandler implements RequestStreamHandler {
     private ObjectMapper om = new ObjectMapper();
     private PlayerScoresService playerScoresService;
 
+    public PostHitTrialWebApiHandler(PlayerScoresService playerScoresService) {
+        this.playerScoresService=playerScoresService;
+    }
+
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)  {
         try{

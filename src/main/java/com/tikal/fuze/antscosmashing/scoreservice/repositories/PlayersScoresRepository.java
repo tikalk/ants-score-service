@@ -46,13 +46,17 @@ public class PlayersScoresRepository {
     }
 
 
-    public void put(int playerId, int score){
+    public void put(int playerId,int gameId,int userId,int teamId, int score){
         //put a new record with score 0 in case it doesn't exist
         getTable().updateItem(new UpdateItemSpec()
                 .withPrimaryKey("playerId",playerId)
                 .withExpressionSpec(
                         new ExpressionSpecBuilder()
-                        .addUpdate(N("score").set(if_not_exists("score", 0))).buildForUpdate())
+                                .addUpdate(N("score").set(if_not_exists("score", score)))
+                                .addUpdate(N("gameId").set(gameId))
+                                .addUpdate(N("userId").set(userId))
+                                .addUpdate(N("teamId").set(teamId))
+                                .buildForUpdate())
         );
 
         //Add the new score

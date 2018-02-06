@@ -21,6 +21,10 @@ public class ProcessKinesisHitTrialEventsHandler implements RequestHandler<Kines
             playerScoresService = new PlayerScoresService();
     }
 
+    public ProcessKinesisHitTrialEventsHandler(PlayerScoresService playerScoresService) {
+        this.playerScoresService=playerScoresService;
+    }
+
     @Override
     public Void handleRequest(KinesisEvent event, Context context) {
         try {

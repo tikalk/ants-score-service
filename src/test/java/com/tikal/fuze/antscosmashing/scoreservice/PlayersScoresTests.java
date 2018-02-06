@@ -31,13 +31,13 @@ public class PlayersScoresTests {
     public void testPostHitTrialWebApi() throws IOException {
         String data = getStringFromInputFile("post-score.json");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data.getBytes());
-        new PostHitTrialWebApiHandler().handleRequest(inputStream,new ByteArrayOutputStream(),null);
+        new PostHitTrialWebApiHandler(playerScoresService).handleRequest(inputStream,new ByteArrayOutputStream(),null);
     }
 
     @Test
     public void testPlayerScoreServicePostToKinesis() throws IOException {
         String kinesisData = "\"{\\\"type\\\": \\\"hit\\\",\\\"antId\\\": \\\"11122\\\",\\\"playerId\\\": 9,\\\"gameId\\\":5,\\\"userId\\\":55,\\\"teamId\\\":7}\"";
-        new ProcessKinesisHitTrialEventsHandler().handleKinesisData(kinesisData);
+        new ProcessKinesisHitTrialEventsHandler(playerScoresService).handleKinesisData(kinesisData);
     }
 
     @Test
