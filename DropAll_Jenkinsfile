@@ -4,6 +4,10 @@ node {
     def workspace = pwd()
     try {
         stage ('Drop All') {
+            sh """
+                export event_uuid=`aws lambda list-event-source-mappings --function-name Ants-Smashing-ProcessKinesisHitTrialEvents | jq .EventSourceMappings[0].UUID | sed s/\\\"//g`
+                aws lambda delete-event-source-mapping --uuid $event_uuid
+            """
             sh "aws dynamodb delete-table --table-name Ants-Smashing-PlayersScore"
             sh "aws dynamodb delete-table --table-name Ants-Smashing-TeamsScore"
             sh "aws dynamodb delete-table --table-name Ants-Smashing-smashedAnts"
