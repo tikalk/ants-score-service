@@ -4,8 +4,8 @@ node {
     def workspace = pwd()
     try {
         stage ('Drop All') {
-            def $event_uuid = sh "aws lambda list-event-source-mappings --function-name Ants-Smashing-ProcessKinesisHitTrialEvents | jq .EventSourceMappings[0].UUID | sed s/\\\"//g"
-            sh "echo $event_uuid"
+            def event_uuid = sh(script: 'aws lambda list-event-source-mappings --function-name Ants-Smashing-ProcessKinesisHitTrialEvents | jq .EventSourceMappings[0].UUID | sed s/\"//g', returnStdout: true)
+            sh "echo event_uuid is $event_uuid"
             sh "aws lambda delete-event-source-mapping --uuid $event_uuid"
 
             sh "aws dynamodb delete-table --table-name Ants-Smashing-PlayersScore"
